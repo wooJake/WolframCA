@@ -1,41 +1,131 @@
-#include <vector>
-#include <fstream>
-#include <string>
+#include "ElementaryCA.h"
 
-#define BOARD_SIZE 90
+bool ElementaryCA::BinaryRule(int left, int middle, int right, int index) {
 
-class ElementaryCA {
+	//Checking state of (from position) top left, top center, and top right to see what rule must be invoked.
+	return left == binaryRule[index][0] &&
+		middle == binaryRule[index][1] &&
+		right == binaryRule[index][2];
+}
+int ElementaryCA::Rules(int left, int middle, int right) {
 
-private:
+	//Looping through all 8 rules.
+	for (int i = 0; i < 8; ++i) {
 
-	LList* headList;
-	LList* currList;
-	LList* endList;
+		//If the binarRule is true (1), set to 1 otherwise set to false (0).
+		if (BinaryRule(left, middle, right, i)) {
 
-	unsigned int magicNum;
-	unsigned int ruleNum;
+			return rule[i];
+		}
+	}
+	return 0;
+}
 
-	//Setting rule as rule 30, this can be changed to any binary 0 to 255.
-	//int rule[8] = { 0,0,0,1,1,1,1,0 };
-	//setting binary rules, these should not be changed.
-	//int binaryRule[8][3] = { {1,1,1},{1,1,0},{1,0,1},{1,0,0},{0,1,1},{0,1,0},{0,0,1},{0,0,0} };
+void ElementaryCA::GenList() {
+	headList = new LList((magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2, ruleNum % 2);
+	magicNum = magicNum >> 3;
+	ruleNum = ruleNum >> 1;
+	endList = headList;
 
-	std::vector<int> textLine;
+	for (int i = 1; i < 8; ++i) {
 
-	//There are 2 boards because conflict may arise if there is only 1.
-	unsigned int* board;
-	unsigned int* board2;
+		currList = new LList((magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2, ruleNum % 2);
+		magicNum = magicNum >> 3;
+		ruleNum = ruleNum >> 1;
 
-	unsigned int counter;
+		currList
 
-	bool BinaryRule(int left, int middle, int right, int index);
-	int Rules(int left, int middle, int right);
-	void GenList();
+	}
+}
 
-public:
+void ElementaryCA::Game() {
 
-	void Game();
+	std::ofstream outFS;
 
-	ElementaryCA();
-	virtual ~ElementaryCA();
-};
+	std::string fileName = "WolframCAout.txt";
+
+	outFS.open(fileName);
+
+	int whileSize = BOARD_SIZE * 0x18;
+
+	//Setting up board.
+	for (int i = 0; i < BOARD_SIZE; ++i) {
+
+		//Setting random number between 0 and 1 (this is all that is needed since this is all in binary).
+		board[i] = rand() % 2;
+		board2[i] = board[i];
+	}
+
+	while (counter <= whileSize) {
+
+		for (int i = 0; i < BOARD_SIZE; ++i) {
+
+			//Making sure there is no error when on the leftmost and rightmost sides.
+			int left = i == 0 ? board[BOARD_SIZE - 1] : board[i - 1];
+			int middle = board[i];
+			int right = i == BOARD_SIZE - 1 ? board[0] : board[i + 1];
+
+			//Checking rules and storing the result in board2 so there is no conflict between readings.
+			board2[i] = Rules(left, middle, right);
+		}
+
+		//Looping through the board again to display and set the first board equal to the second board.
+		for (int i = 0; i < BOARD_SIZE; ++i) {
+
+			//Setting board 1 to board 2.
+			board[i] = board2[i];
+
+			textLine.push_back(board[i]);
+
+			//If board at i is 0 then display nothing, otherwise set it to a visible character.
+			if (board[i] == 0) {
+
+				std::cout << ' ';
+			}
+			else {
+
+				std::cout << 'O';
+			}
+		}
+		//At the end of a line go to next line visibly.
+		std::cout << "\n";
+
+		++counter;
+	}
+
+	for (int i = 0; i <= whileSize; ++i) {
+
+		if (i % BOARD_SIZE == 0) {
+
+			outFS << std::endl;
+			continue;
+		}
+
+		if (textLine.at(i) == 0) {
+
+			outFS << ' ';
+			continue;
+		}
+		outFS << 'O';
+	}
+}
+ElementaryCA::ElementaryCA() {
+
+	magicNum = 0xFAC688;
+	ruleNum = 0b00011110;
+
+	counter = 0;
+
+	headList = nullptr;
+	currList = nullptr;
+	endList = nullptr;
+
+	board = new unsigned int[BOARD_SIZE];
+	board2 = new unsigned int[BOARD_SIZE];
+}
+ElementaryCA::~ElementaryCA() {
+
+	//Deleting boards.
+	delete[] board;
+	delete[] board2;
+}
