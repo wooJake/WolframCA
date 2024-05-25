@@ -20,7 +20,33 @@ int ElementaryCA::Rules(int left, int middle, int right) {
 	}
 	return 0;
 }
+
+void ElementaryCA::GenList() {
+	headList = new LList((magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2, ruleNum % 2);
+	magicNum = magicNum >> 3;
+	ruleNum = ruleNum >> 1;
+	endList = headList;
+
+	for (int i = 1; i < 8; ++i) {
+
+		currList = new LList((magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2, ruleNum % 2);
+		magicNum = magicNum >> 3;
+		ruleNum = ruleNum >> 1;
+
+		currList
+
+	}
+}
+
 void ElementaryCA::Game() {
+
+	std::ofstream outFS;
+
+	std::string fileName = "WolframCAout.txt";
+
+	outFS.open(fileName);
+
+	int whileSize = BOARD_SIZE * 0x18;
 
 	//Setting up board.
 	for (int i = 0; i < BOARD_SIZE; ++i) {
@@ -30,7 +56,7 @@ void ElementaryCA::Game() {
 		board2[i] = board[i];
 	}
 
-	while (counter <= 1000) {
+	while (counter <= whileSize) {
 
 		for (int i = 0; i < BOARD_SIZE; ++i) {
 
@@ -66,10 +92,33 @@ void ElementaryCA::Game() {
 
 		++counter;
 	}
+
+	for (int i = 0; i <= whileSize; ++i) {
+
+		if (i % BOARD_SIZE == 0) {
+
+			outFS << std::endl;
+			continue;
+		}
+
+		if (textLine.at(i) == 0) {
+
+			outFS << ' ';
+			continue;
+		}
+		outFS << 'O';
+	}
 }
 ElementaryCA::ElementaryCA() {
 
+	magicNum = 0xFAC688;
+	ruleNum = 0b00011110;
+
 	counter = 0;
+
+	headList = nullptr;
+	currList = nullptr;
+	endList = nullptr;
 
 	board = new unsigned int[BOARD_SIZE];
 	board2 = new unsigned int[BOARD_SIZE];
