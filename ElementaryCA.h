@@ -1,5 +1,4 @@
-#include "LList.h"
-
+#include <iostream>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -10,15 +9,13 @@ class ElementaryCA {
 
 private:
 
-	LList* list;
-
 	unsigned int magicNum;//0xFAC688
 	unsigned int ruleNum;//0b11110
 
 	//Setting rule as rule 30, this can be changed to any binary 0 to 255.
-	//int rule[8] = { 0,0,0,1,1,1,1,0 };
+	int rule[8] = { 0,0,0,1,1,1,1,0 };
 	//setting binary rules, these should not be changed.
-	//int binaryRule[8][3] = { {1,1,1},{1,1,0},{1,0,1},{1,0,0},{0,1,1},{0,1,0},{0,0,1},{0,0,0} };
+	int binaryRule[8][3] = { {1,1,1},{1,1,0},{1,0,1},{1,0,0},{0,1,1},{0,1,0},{0,0,1},{0,0,0} };
 
 	std::vector<int> textLine;
 
