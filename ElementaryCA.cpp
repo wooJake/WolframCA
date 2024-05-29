@@ -101,8 +101,6 @@ ElementaryCA::ElementaryCA() {
 
 	board = new unsigned int[BOARD_SIZE];
 	board2 = new unsigned int[BOARD_SIZE];
-
-	GenList();
 }
 ElementaryCA::~ElementaryCA() {
 
