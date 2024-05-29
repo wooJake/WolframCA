@@ -27,7 +27,6 @@ private:
 
 	bool BinaryRule(int left, int middle, int right, int index);
 	int Rules(int left, int middle, int right);
-	void GenList();
 
 public:
 
