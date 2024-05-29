@@ -3,56 +3,25 @@
 bool ElementaryCA::BinaryRule(int left, int middle, int right, int index) {
 
 	//Checking state of (from position) top left, top center, and top right to see what rule must be invoked.
-	return left == list->ReturnBinaryRule(0) &&
-		middle == list->ReturnBinaryRule(1) &&
-		right == list->ReturnBinaryRule(2);
+	return left == binaryRule[index][0] &&
+		middle == binaryRule[index][1] &&
+		right == binaryRule[index][2];
 }
 int ElementaryCA::Rules(int left, int middle, int right) {
 
 	//Looping through all 8 rules.
 	for (int i = 0; i < 8; ++i) {
 
-		list->GetNext();
-
-
 		//If the binarRule is true (1), set to 1 otherwise set to false (0).
 		if (BinaryRule(left, middle, right, i)) {
 
-			return list->ReturnRule();
+			return rule[i];
 		}
 	}
 	return 0;
 }
 
-void ElementaryCA::GenList() {
-
-	unsigned int magicNums[3] = { (magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2 };
-
-    list->head = new LList(ruleNum % 2, magicNums);
-
-	magicNum = magicNum >> 3;
-	ruleNum = ruleNum >> 1;
-
-	LList* currNod = list->head;
-	
-	for (int i = 1; i < 8; ++i) {
-
-		magicNums[0] = (magicNum) % 2;
-		magicNums[1] = (magicNum >> 1) % 2;
-		magicNums[2] = (magicNum >> 2) % 2;
-
-		currNod->InsertAfter(new LList(ruleNum % 2, magicNums));
-
-		magicNum = magicNum >> 3;
-		ruleNum = ruleNum >> 1;
-		currNod->InsertAfter(list->GetNext());
-	}
-	list = currNod;
-}
-
 void ElementaryCA::Game() {
-
-	list = new LList();
 
 	std::ofstream outFS;
 
@@ -124,8 +93,6 @@ void ElementaryCA::Game() {
 	}
 }
 ElementaryCA::ElementaryCA() {
-
-	list = new LList();
 
 	magicNum = 0xFAC688;
 	ruleNum = 0b00011110;
