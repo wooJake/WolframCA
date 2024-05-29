@@ -3,42 +3,56 @@
 bool ElementaryCA::BinaryRule(int left, int middle, int right, int index) {
 
 	//Checking state of (from position) top left, top center, and top right to see what rule must be invoked.
-	return left == binaryRule[index][0] &&
-		middle == binaryRule[index][1] &&
-		right == binaryRule[index][2];
+	return left == list->ReturnBinaryRule(0) &&
+		middle == list->ReturnBinaryRule(1) &&
+		right == list->ReturnBinaryRule(2);
 }
 int ElementaryCA::Rules(int left, int middle, int right) {
 
 	//Looping through all 8 rules.
 	for (int i = 0; i < 8; ++i) {
 
+		list->GetNext();
+
+
 		//If the binarRule is true (1), set to 1 otherwise set to false (0).
 		if (BinaryRule(left, middle, right, i)) {
 
-			return rule[i];
+			return list->ReturnRule();
 		}
 	}
 	return 0;
 }
 
 void ElementaryCA::GenList() {
-	headList = new LList((magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2, ruleNum % 2);
+
+	unsigned int magicNums[3] = { (magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2 };
+
+    list->head = new LList(ruleNum % 2, magicNums);
+
 	magicNum = magicNum >> 3;
 	ruleNum = ruleNum >> 1;
-	endList = headList;
 
+	LList* currNod = list->head;
+	
 	for (int i = 1; i < 8; ++i) {
 
-		currList = new LList((magicNum) % 2, (magicNum >> 1) % 2, (magicNum >> 2) % 2, ruleNum % 2);
+		magicNums[0] = (magicNum) % 2;
+		magicNums[1] = (magicNum >> 1) % 2;
+		magicNums[2] = (magicNum >> 2) % 2;
+
+		currNod->InsertAfter(new LList(ruleNum % 2, magicNums));
+
 		magicNum = magicNum >> 3;
 		ruleNum = ruleNum >> 1;
-
-		currList
-
+		currNod->InsertAfter(list->GetNext());
 	}
+	list = currNod;
 }
 
 void ElementaryCA::Game() {
+
+	list = new LList();
 
 	std::ofstream outFS;
 
@@ -46,10 +60,10 @@ void ElementaryCA::Game() {
 
 	outFS.open(fileName);
 
-	int whileSize = BOARD_SIZE * 0x18;
+	unsigned int whileSize = BOARD_SIZE * 0x18;
 
 	//Setting up board.
-	for (int i = 0; i < BOARD_SIZE; ++i) {
+	for (unsigned int i = 0; i < BOARD_SIZE; ++i) {
 
 		//Setting random number between 0 and 1 (this is all that is needed since this is all in binary).
 		board[i] = rand() % 2;
@@ -111,17 +125,17 @@ void ElementaryCA::Game() {
 }
 ElementaryCA::ElementaryCA() {
 
+	list = new LList();
+
 	magicNum = 0xFAC688;
 	ruleNum = 0b00011110;
 
 	counter = 0;
 
-	headList = nullptr;
-	currList = nullptr;
-	endList = nullptr;
-
 	board = new unsigned int[BOARD_SIZE];
 	board2 = new unsigned int[BOARD_SIZE];
+
+	GenList();
 }
 ElementaryCA::~ElementaryCA() {
 
