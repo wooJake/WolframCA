@@ -1,20 +1,24 @@
+#include <iostream>
 
+struct NODE {
 
+	NODE* next;
+};
 class LList {
 
-private :
+private:
 
 	int rule;
 	int binaryRule[3];
-	int index;
 
 public:
+
+	LList* head;
 
 	int ReturnRule();
 	int ReturnBinaryRule(int index);
 
-
-
-	LList(int in_1, int in_2, int in_3, int rule_input);
+	LList();
+	LList(unsigned int rule_in, unsigned int bin_in[3]);
 	virtual ~LList();
 };
