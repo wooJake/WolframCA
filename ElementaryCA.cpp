@@ -76,7 +76,7 @@ void ElementaryCA::Game() {
 		++counter;
 	}
 
-	for (int i = 0; i <= whileSize; ++i) {
+	for (int i = 0; i <= BOARD_SIZE * whileSize; ++i) {
 
 		if (i % BOARD_SIZE == 0) {
 
